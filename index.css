@@ -766,40 +766,66 @@ body.menu-open .menu-icon span:last-child {
 
 .carousel-img {
   width: 100%;
-  height: 400px;
+  height: 550px;
   object-fit: cover;
   background: transparent;
-  transition: transform 0.8s ease;
+  transition: transform 1.2s cubic-bezier(0.2, 0, 0.2, 1);
 }
 
 .carousel-item:hover .carousel-img {
-  transform: scale(1.05);
+  transform: scale(1.1);
 }
 
 .carousel-caption {
   position: absolute;
-  bottom: 0;
+  top: 0;
   left: 0;
   right: 0;
-  padding: 40px 30px 30px;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 0%, rgba(0, 0, 0, 0) 100%);
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  background: rgba(0, 0, 0, 0.3);
   color: #fff;
-  text-align: left;
+  text-align: center;
+  opacity: 0;
+  transition: all 0.6s cubic-bezier(0.2, 0, 0.2, 1);
+  backdrop-filter: blur(0px);
+}
+
+.carousel-item:hover .carousel-caption {
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
 }
 
 .carousel-caption h3 {
-  font-size: clamp(1.2rem, 2vw, 1.8rem);
-  font-weight: 700;
-  margin-bottom: 5px;
+  font-size: clamp(1.5rem, 3vw, 2.2rem);
+  font-weight: 800;
+  margin-bottom: 15px;
   color: #fff;
+  transform: translateY(20px);
+  transition: transform 0.6s cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+.carousel-item:hover .carousel-caption h3 {
+  transform: translateY(0);
 }
 
 .carousel-caption p {
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: var(--accent);
   text-transform: uppercase;
-  letter-spacing: 0.05em;
-  font-weight: 600;
+  letter-spacing: 0.15em;
+  font-weight: 700;
+  transform: translateY(20px);
+  transition: transform 0.6s cubic-bezier(0.2, 0, 0.2, 1) 0.1s;
+}
+
+.carousel-item:hover .carousel-caption p {
+  transform: translateY(0);
 }
 
 .carousel-control {
@@ -1529,15 +1555,15 @@ a.contact-value:hover {
   position: fixed;
   inset: 0;
   background: rgba(0, 0, 0, 0.85);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(15px);
   z-index: 100000;
   display: flex;
   align-items: center;
   justify-content: center;
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.4s ease, visibility 0.4s ease;
-  padding: 1rem;
+  transition: opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 1.5rem;
 }
 
 .modal-backdrop.open {
@@ -1553,15 +1579,17 @@ a.contact-value:hover {
   border-radius: var(--radius);
   overflow-y: auto;
   position: relative;
-  transform: translateY(30px) scale(0.98);
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.3s ease;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  transform: translateY(40px) scale(0.95);
+  opacity: 0;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease, background 0.3s ease;
+  box-shadow: 0 40px 100px -20px rgba(0, 0, 0, 0.6);
   display: flex;
   flex-direction: column;
 }
 
 .modal-backdrop.open .modal-card {
   transform: translateY(0) scale(1);
+  opacity: 1;
 }
 
 .modal-close {
