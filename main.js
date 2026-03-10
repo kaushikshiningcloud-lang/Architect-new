@@ -330,32 +330,28 @@ async function renderProjects() {
     if (projectsList) {
       projectsList.innerHTML = '';
 
-      function groupKey(location) {
-        const loc = (location || 'Unknown').trim();
-        if (/,\s*Odisha$/i.test(loc)) return 'Odisha';
-        return loc;
+      function groupKey(category) {
+        const cat = category || '';
+        if (cat === 'residential' || cat === 'villas') return 'Residential';
+        return 'Commercial';
       }
-      const byCity = new Map();
+      const byCategory = new Map();
       PROJECTS.forEach((proj, idx) => {
-        const key = groupKey(proj.location);
-        if (!byCity.has(key)) byCity.set(key, []);
-        byCity.get(key).push({ proj, idx });
+        const key = groupKey(proj.category);
+        if (!byCategory.has(key)) byCategory.set(key, []);
+        byCategory.get(key).push({ proj, idx });
       });
 
-      const cities = Array.from(byCity.keys()).sort((a, b) => {
-        if (a === 'Bangalore') return -1;
-        if (b === 'Bangalore') return 1;
-        return a.localeCompare(b);
-      });
+      const categories = ['Residential', 'Commercial'];
 
-      function buildCityCard(city, cIdx) {
-        const items = byCity.get(city);
+      function buildCategoryCard(category, cIdx) {
+        const items = byCategory.get(category) || [];
         const delay = (cIdx % 10) * 0.05;
         const section = document.createElement('section');
         section.className = 'city-card reveal';
         section.style.setProperty('--delay', `${delay}s`);
         section.innerHTML = `
-        <h3 class="city-title">${escapeHtml(city)}</h3>
+        <h3 class="city-title">${escapeHtml(category)}</h3>
         <ul class="city-list"></ul>
       `;
         const ul = section.querySelector('.city-list');
@@ -366,7 +362,7 @@ async function renderProjects() {
           li.innerHTML = `
           <div class="city-project-main">
             <span class="city-project-name">${proj.name}</span>
-            <span class="city-project-meta">${tagDisplay} • ${proj.client || 'N/A'}</span>
+            <span class="city-project-meta">${tagDisplay} • ${proj.location}</span>
           </div>
           <button type="button" class="city-project-open" aria-label="Open details">View</button>
         `;
@@ -390,9 +386,9 @@ async function renderProjects() {
       const rightCol = document.createElement('div');
       rightCol.className = 'cities-column-right';
 
-      cities.forEach((city, cIdx) => {
-        const card = buildCityCard(city, cIdx);
-        if (city === 'Bangalore') {
+      categories.forEach((cat, cIdx) => {
+        const card = buildCategoryCard(cat, cIdx);
+        if (cat === 'Residential') {
           leftCol.appendChild(card);
         } else {
           rightCol.appendChild(card);
