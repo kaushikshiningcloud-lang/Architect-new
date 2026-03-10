@@ -1,0 +1,14 @@
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Gemini/Antigravity
+.gemini/
+brain/
+walkthrough.md
+task.md
+implementation_plan.md
