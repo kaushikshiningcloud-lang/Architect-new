@@ -207,7 +207,7 @@ textarea {
 }
 
 .logo-img {
-   height: 42px;
+   height: 172px; /* Increased from 152px */
    width: auto;
    display: none;
    transition: opacity var(--t);
@@ -1530,7 +1530,7 @@ a.contact-value:hover {
 }
 
 .footer-logo .logo-img {
-  height: 52px;
+  height: 172px; /* Increased from 152px */
 }
 
 .footer-logo span {
