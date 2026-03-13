@@ -203,30 +203,26 @@ textarea {
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
   z-index: 1100;
 }
 
-.logo-mark {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  background: var(--text);
-  color: var(--bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  transition: background var(--t), color var(--t);
-  flex-shrink: 0;
+.logo-img {
+   height: 42px;
+   width: auto;
+   display: none;
+   transition: opacity var(--t);
+ }
+
+.logo-light {
+  display: block;
 }
 
-#fullscreen-menu.open~* .logo-mark,
-body.menu-open .logo-mark {
-  background: #fff;
-  color: #000;
+[data-theme="dark"] .logo-light {
+  display: none;
+}
+
+[data-theme="dark"] .logo-dark {
+  display: block;
 }
 
 /* Header actions */
@@ -715,6 +711,68 @@ body.menu-open .menu-icon span:last-child {
 
 #genesis-carousel {
   padding: clamp(5rem, 12vh, 9rem) var(--gutter);
+}
+
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 20px;
+}
+
+@media (min-width: 640px) {
+  .gallery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 1024px) {
+  .gallery-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.gallery-card {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent);
+}
+
+.gallery-card img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  display: block;
+}
+
+.gallery-meta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 18px 16px;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0) 100%);
+  color: #fff;
+}
+
+.gallery-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0 0 4px;
+}
+
+.gallery-sub {
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
 
 .carousel-wrapper {
@@ -1468,20 +1526,11 @@ a.contact-value:hover {
 .footer-logo {
   display: flex;
   align-items: center;
-  gap: 0.85rem;
+  gap: 1.2rem;
 }
 
-.footer-logo .logo-mark {
-  width: 48px;
-  height: 48px;
-  font-size: 1.2rem;
-}
-
-.footer-logo strong {
-  display: block;
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: -0.01em;
+.footer-logo .logo-img {
+  height: 52px;
 }
 
 .footer-logo span {

@@ -169,12 +169,12 @@ function rebuildDots() {
 }
 
 function getCategoryLabel(category) {
-  if (category === 'residential') return 'High Rise Residential';
-  if (category === 'it-office') return 'Commercial Buildings';
+  if (category === 'residential') return 'Residential';
   if (category === 'villas') return 'Villas';
-  if (category === 'healthcare') return 'Commercial Buildings';
-  if (category === 'masterplan') return 'Commercial Buildings';
-  return 'Commercial Buildings';
+  if (category === 'it-office' || category === 'commercial') return 'Commercial';
+  if (category === 'industrial') return 'Industrial';
+  if (category === 'institutional') return 'Institutional';
+  return 'Urban Development';
 }
 
 function toTitleCase(s) {
@@ -197,29 +197,30 @@ const IMAGE_POSITION_OVERRIDES = {
 
 // Fixed carousel ordering (as requested)
 const CAROUSEL_ORDER = [
-  "Arsis Dommasandra",
-  "DSR EVOQ",
-  "Highland Greenz",
-  "Ozone Polestar",
-  "AWHO Tundup Vihar",
-  "Adora De Goa",
-  "The Tree",
-  "DSR THE ADDRESS",
-  "ARK OAK TREE",
-  "Shimmering Heights",
-  "Assetz Jakkur",
-  "Amitha Wisdom Homes",
-  "AWHO Clubhouse",
-  "Ozone WF 48",
-  "SLK Green Park",
-  "Vaishnavi IT Park",
-  "Shilpita Tech Park",
-  "Adani Tiroda Township",
-  "Adani Kawai Township",
   "PAVANI MIRABILIA",
+  "DSR THE ADDRESS",
+  "Purva Zenium",
+  "Highland Greenz",
+  "Provident Tree",
+  "Adora-De-Goa",
   "POULOMI FLORIQUE",
   "DSR ELIXIR VILLAS",
-  "Purva Zenium"
+  "Arsis Dommasandra",
+  "KE Bandapura",
+  "Assetz Jakkur",
+  "AWHO Clubhouse",
+  "AWHO Tundup Vihar",
+  "Century Eden",
+  "Amitha Wisdom Homes",
+  "Vedanta Township",
+  "Hulla Homes",
+  "Yenepoya Family Accommodation",
+  "Manyata techpark",
+  "SLK Green Park",
+  "Shilpita Tech Park",
+  "Adani Tiroda Township",
+  "Model Industrial Park",
+  "Kalahandi Hospital"
 ];
 
 async function loadJsonCarousel(url) {
@@ -266,65 +267,68 @@ async function renderProjects() {
         return imageMap[key] ? { ...p, image: imageMap[key] } : p;
       });
 
-    if (genesisTrack) {
-      genesisTrack.innerHTML = '';
-      if (carouselDots) carouselDots.innerHTML = '';
+    // Helper ranks for sorting (reusable across gallery and list)
+    const customRank = (name) => {
+      const idx = CAROUSEL_ORDER.findIndex(n => n.toLowerCase().trim() === name.toLowerCase().trim());
+      return idx === -1 ? 999 : idx;
+    };
 
-      genesisItems.forEach((proj, idx) => {
-        const imgSrc = proj.image || 'images/residential.png';
-        const itemHTML = `
-        <article class="carousel-item" data-modal-idx="${proj.originalIdx}">
-          <img class="carousel-img" src="${escapeHtml(imgSrc)}" alt="${escapeHtml(proj.name)}" loading="lazy" />
-          <div class="carousel-caption">
-            <h3>${escapeHtml(toTitleCase(proj.name))}</h3>
-            <p>${escapeHtml(proj.location || '')}</p>
+    const categoryRank = (cat) => (cat === 'residential' ? 0 : 1);
+
+    const cityRank = (loc) => {
+      const l = (loc || '').toLowerCase();
+      if (l.includes('bangalore')) return 0;
+      if (l.includes('mysore')) return 1;
+      if (l.includes('goa')) return 2;
+      if (l.includes('cochin')) return 3;
+      return 10;
+    };
+
+    // Render Projects Gallery (replaces carousel)
+    const gallery = document.getElementById('projects-gallery-grid');
+    if (gallery) {
+      gallery.innerHTML = '';
+      
+      const galleryItems = PROJECTS
+        .map((proj, idx) => ({ ...proj, originalIdx: idx }))
+        .filter(p => customRank(p.name) !== 999)
+        .sort((a, b) => {
+          // First by custom rank
+          const rA = customRank(a.name);
+          const rB = customRank(b.name);
+          if (rA !== rB) return rA - rB;
+
+          // Then by category (Residential first)
+          const catA = categoryRank(a.category);
+          const catB = categoryRank(b.category);
+          if (catA !== catB) return catA - catB;
+
+          // Finally by city rank
+          return cityRank(a.location) - cityRank(b.location);
+        });
+
+      galleryItems.forEach(proj => {
+        const key = (proj.name || '').toLowerCase().trim();
+        const imgSrc = imageMap[key] || proj.image || 'images/residential.png';
+        const card = document.createElement('article');
+        card.className = 'gallery-card';
+        card.innerHTML = `
+          <img src="${escapeHtml(imgSrc)}" alt="${escapeHtml(proj.name)}" />
+          <div class="gallery-meta">
+            <h3 class="gallery-title">${escapeHtml(toTitleCase(proj.name))}</h3>
+            <div class="gallery-sub">${escapeHtml(getCategoryLabel(proj.category))} • ${escapeHtml(proj.location || '')}</div>
           </div>
-        </article>
-      `;
-        genesisTrack.insertAdjacentHTML('beforeend', itemHTML);
-
-        const itemEl = genesisTrack.lastElementChild;
-        if (itemEl) {
-          const img = itemEl.querySelector('.carousel-img');
-          if (img) {
-            img.onerror = function () {
-              if (this._fallbacks && this._fallbacks.length) {
-                const next = this._fallbacks.shift();
-                this.src = next;
-              } else {
-                this.src = 'images/residential.png';
-                this.onerror = null;
-              }
-            };
-            // Per-project object-position override to improve composition
-            const pos = IMAGE_POSITION_OVERRIDES[proj.name];
-            if (pos) img.style.objectPosition = pos;
-            const slug = (proj.name || '')
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, '-')
-              .replace(/-+/g, '-')
-              .replace(/^-|-$/g, '');
-            const candidates = [];
-            if (proj.image) candidates.push(proj.image);
-            candidates.push(`Images for Portfolio/${proj.name}.png`);
-            candidates.push(`Images for Portfolio/${proj.name}.jpg`);
-            candidates.push(`Images for Portfolio/${proj.name}.jpeg`);
-            candidates.push(`Images for Portfolio/${proj.name}.webp`);
-            candidates.push(`Images for Portfolio/${proj.name}.avif`);
-            candidates.push(`images/genesis/${slug}.png`);
-            candidates.push(`images/genesis/${slug}.jpg`);
-            candidates.push(`images/genesis/${slug}.webp`);
-            img._fallbacks = candidates.filter(p => p !== img.src);
-            img.addEventListener('load', () => {
-              updateCarousel();
-            }, { once: true });
-          }
-          itemEl.addEventListener('click', () => openModal(proj.originalIdx));
-        }
+        `;
+        card.addEventListener('click', () => openModal(proj.originalIdx));
+        gallery.appendChild(card);
+        const img = card.querySelector('img');
+        img.onerror = function () {
+          this.src = 'images/residential.png';
+          this.onerror = null;
+        };
+        const pos = IMAGE_POSITION_OVERRIDES[proj.name];
+        if (pos) img.style.objectPosition = pos;
       });
-      currentCarouselIndex = 0;
-      rebuildDots();
-      setTimeout(() => updateCarousel(), 0);
     }
 
     if (projectsList) {
@@ -333,19 +337,31 @@ async function renderProjects() {
       function groupKey(category) {
         const cat = category || '';
         if (cat === 'residential' || cat === 'villas') return 'Residential';
+        if (cat === 'commercial' || cat === 'it-office') return 'Commercial';
+        if (cat === 'industrial') return 'Industrial';
+        if (cat === 'institutional') return 'Institutional';
         return 'Commercial';
       }
       const byCategory = new Map();
       PROJECTS.forEach((proj, idx) => {
+        if (customRank(proj.name) === 999) return;
         const key = groupKey(proj.category);
         if (!byCategory.has(key)) byCategory.set(key, []);
         byCategory.get(key).push({ proj, idx });
       });
 
-      const categories = ['Residential', 'Commercial'];
+      const categories = ['Residential', 'Commercial', 'Industrial', 'Institutional'];
 
       function buildCategoryCard(category, cIdx) {
         const items = byCategory.get(category) || [];
+        
+        // Sort items within the category by CAROUSEL_ORDER priority
+        items.sort((a, b) => {
+          const rA = customRank(a.proj.name);
+          const rB = customRank(b.proj.name);
+          return rA - rB;
+        });
+
         const delay = (cIdx % 10) * 0.05;
         const section = document.createElement('section');
         section.className = 'city-card reveal';
@@ -403,15 +419,7 @@ async function renderProjects() {
     revealEls = document.querySelectorAll('.reveal');
     revealEls.forEach(el => revealObserver.observe(el));
     initCardCursors();
-    currentCarouselIndex = 0;
-    updateCarousel();
-    if (genesisItems.length <= 1) {
-      carouselPrev?.setAttribute('disabled', 'true');
-      carouselNext?.setAttribute('disabled', 'true');
-    } else {
-      carouselPrev?.removeAttribute('disabled');
-      carouselNext?.removeAttribute('disabled');
-    }
+    // Carousel controls no-op when gallery is used
   } catch (e) {
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
   }
