@@ -169,9 +169,9 @@ function rebuildDots() {
 }
 
 function getCategoryLabel(category) {
-  if (category === 'residential') return 'Residential';
+  if (category === 'residential') return 'High Rise Residential';
   if (category === 'villas') return 'Villas';
-  if (category === 'it-office' || category === 'commercial') return 'Commercial';
+  if (category === 'it-office' || category === 'commercial') return 'Commercial Buildings';
   if (category === 'industrial') return 'Industrial';
   if (category === 'institutional') return 'Institutional';
   return 'Urban Development';
@@ -336,11 +336,12 @@ async function renderProjects() {
 
       function groupKey(category) {
         const cat = category || '';
-        if (cat === 'residential' || cat === 'villas') return 'Residential';
-        if (cat === 'commercial' || cat === 'it-office') return 'Commercial';
+        if (cat === 'residential') return 'High Rise Residential';
+        if (cat === 'villas') return 'Villas';
+        if (cat === 'commercial' || cat === 'it-office') return 'Commercial Buildings';
         if (cat === 'industrial') return 'Industrial';
         if (cat === 'institutional') return 'Institutional';
-        return 'Commercial';
+        return 'Commercial Buildings';
       }
       const byCategory = new Map();
       PROJECTS.forEach((proj, idx) => {
@@ -350,7 +351,7 @@ async function renderProjects() {
         byCategory.get(key).push({ proj, idx });
       });
 
-      const categories = ['Residential', 'Commercial', 'Industrial', 'Institutional'];
+      const categories = ['High Rise Residential', 'Commercial Buildings', 'Villas', 'Industrial', 'Institutional'];
 
       function buildCategoryCard(category, cIdx) {
         const items = byCategory.get(category) || [];
@@ -404,7 +405,7 @@ async function renderProjects() {
 
       categories.forEach((cat, cIdx) => {
         const card = buildCategoryCard(cat, cIdx);
-        if (cat === 'Residential') {
+        if (cat === 'High Rise Residential') {
           leftCol.appendChild(card);
         } else {
           rightCol.appendChild(card);
