@@ -49,6 +49,41 @@ const modalStatus = document.getElementById('modal-status');
 const modalRole = document.getElementById('modal-role');
 
 
+// ─── HERO CAROUSEL ───────────────────────────────────
+function initHeroCarousel() {
+  const heroImg = document.getElementById('hero-carousel-img');
+  if (!heroImg) return;
+
+  const images = [
+    'images/hero/Purva_Zenium_71a82f8903.webp',
+    'images/hero/cf632060e69cc21.jfif',
+    'images/hero/hqdefault.jpg',
+    'images/hero/images.jfif',
+    'images/hero/mfar-manyata-tech-park-completed-commercial-projects.jpg'
+  ];
+
+  let currentIndex = 0;
+
+  setInterval(() => {
+    currentIndex = (currentIndex + 1) % images.length;
+    
+    // Fade out
+    heroImg.style.opacity = '0';
+    
+    setTimeout(() => {
+      heroImg.src = images[currentIndex];
+      // Fade in
+      heroImg.style.opacity = '1';
+    }, 500); // Wait for fade out to complete
+
+  }, 7000); // 7 seconds
+}
+
+// Initialize on load
+document.addEventListener('DOMContentLoaded', () => {
+  initHeroCarousel();
+});
+
 // ─── THEME (dark / light) ───────────────────────────
 (function initTheme() {
   const saved = localStorage.getItem('theme') || 'dark';
