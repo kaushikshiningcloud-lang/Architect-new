@@ -422,6 +422,7 @@ async function renderProjects() {
     initCardCursors();
     // Carousel controls no-op when gallery is used
   } catch (e) {
+    console.error("renderProjects Error:", e);
     document.querySelectorAll('.reveal').forEach(el => el.classList.add('visible'));
   }
 }

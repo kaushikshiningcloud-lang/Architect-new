@@ -25,7 +25,7 @@ const PROJECTS = [
         type: "Residential Group Housing",
         status: "Under Construction",
         role: "Concept to Construction Stage Director - GPPL",
-        image: "Images for Portfolio/DSR THE ADDRESS Bangalore.png",
+        image: "images/DSR THE ADDRESS Bangalore.png",
         summary: "A sprawling 26-acre mega residential township by DSR Infra featuring multiple towers, extensive landscape and amenity zones, and a self-contained urban ecosystem."
     },
     {
@@ -49,7 +49,7 @@ const PROJECTS = [
         type: "Residential Group Housing",
         status: "Completed",
         role: "Concept to Construction Stage Director - GPPL",
-        image: "Images for Portfolio/Highland Greenz Bangalore.webp",
+        image: "images/Highland Greenz Bangalore.webp",
         summary: "A 10-acre green-themed residential development emphasizing sustainable design, efficient space planning, and lush landscaping for healthy community living."
     },
     {
@@ -253,7 +253,7 @@ const PROJECTS = [
         type: "IT Office Building",
         status: "Completed",
         role: "Concept to Construction Stage Director - GPPL",
-        image: "Images for Portfolio/Shilpita Tech Park Bangalore.jpg",
+        image: "images/Shilpita Tech Park Bangalore.jpg",
         summary: "A contemporary IT office building designed from concept through construction, featuring modern workspace architecture."
     },
     {
