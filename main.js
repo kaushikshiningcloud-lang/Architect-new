@@ -51,7 +51,7 @@ const modalRole = document.getElementById('modal-role');
 
 // ─── THEME (dark / light) ───────────────────────────
 (function initTheme() {
-  const saved = localStorage.getItem('theme') || 'dark';
+  const saved = localStorage.getItem('theme') || 'light';
   html.setAttribute('data-theme', saved);
 })();
 

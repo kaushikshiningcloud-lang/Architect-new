@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════
-   PROJECTS DATA — All 24 projects by Urban Grid
+   PROJECTS DATA — All 24 projects by Global Grid Architecture
    Each project: name, category, location, area, client,
    type, status, role, image URL, summary
 ═══════════════════════════════════════════════════ */
