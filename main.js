@@ -223,37 +223,12 @@ const CAROUSEL_ORDER = [
   "Kalahandi Hospital"
 ];
 
-async function loadJsonCarousel(url) {
-  try {
-    const res = await fetch(url, { cache: 'no-store' });
-    if (!res.ok) return null;
-    const data = await res.json();
-    if (Array.isArray(data) && data.length > 0) return data;
-    if (Array.isArray(data?.projects) && data.projects.length > 0) return data.projects;
-    return null;
-  } catch (_) {
-    return null;
-  }
-}
-
 // ─── DYNAMIC PROJECTS RENDER ───────────────────────────
-async function renderProjects() {
+function renderProjects() {
   try {
     if (typeof PROJECTS === 'undefined') return;
 
-    const portfolioCarousel = await loadJsonCarousel('portfolio_carousel.json');
-    const pdfCarousel = portfolioCarousel || await loadJsonCarousel('pdf_carousel.json');
-
     const orderedNames = CAROUSEL_ORDER;
-
-    const imageMap = {};
-    if (pdfCarousel && pdfCarousel.length) {
-      pdfCarousel.forEach(x => {
-        const n = typeof x === 'string' ? x : x?.name;
-        const img = typeof x === 'object' ? x?.image : undefined;
-        if (n && img) imageMap[n.toLowerCase().trim()] = img;
-      });
-    }
 
     const projectByName = new Map(
       PROJECTS.map((proj, idx) => [proj.name.toLowerCase().trim(), { ...proj, originalIdx: idx }])
@@ -261,11 +236,7 @@ async function renderProjects() {
 
     genesisItems = orderedNames
       .map(name => projectByName.get(name.toLowerCase().trim()))
-      .filter(Boolean)
-      .map(p => {
-        const key = p.name.toLowerCase().trim();
-        return imageMap[key] ? { ...p, image: imageMap[key] } : p;
-      });
+      .filter(Boolean);
 
     // Helper ranks for sorting (reusable across gallery and list)
     const customRank = (name) => {
@@ -308,8 +279,7 @@ async function renderProjects() {
         });
 
       galleryItems.forEach(proj => {
-        const key = (proj.name || '').toLowerCase().trim();
-        const imgSrc = imageMap[key] || proj.image || 'images/residential.png';
+        const imgSrc = proj.image || 'images/residential.png';
         const card = document.createElement('article');
         card.className = 'gallery-card';
         card.innerHTML = `
